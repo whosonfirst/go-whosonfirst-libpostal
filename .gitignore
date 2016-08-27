@@ -1,0 +1,8 @@
+*~
+pkg
+src
+!vendor/src
+bin
+!bin/.gitignore
+*.log
+*.json
