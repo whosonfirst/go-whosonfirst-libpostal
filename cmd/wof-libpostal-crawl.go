@@ -29,7 +29,7 @@ type LibpostalElement struct {
 	Value string `json:"value"`
 }
 
-func parse(host string, f *geojson.WOFFeature) (time.Duration, string, string) {
+func parse(endpoint string, f *geojson.WOFFeature) (time.Duration, string, string) {
 
 	parts := []string{
 		"properties.sg:address",
@@ -57,7 +57,7 @@ func parse(host string, f *geojson.WOFFeature) (time.Duration, string, string) {
 
 	str_json, _ := json.Marshal(q)
 
-	url := fmt.Sprintf("http://%s/parser", host)
+	url := fmt.Sprintf("%s/parser", endpoint)
 
 	t1 := time.Now()
 
@@ -90,7 +90,8 @@ func parse(host string, f *geojson.WOFFeature) (time.Duration, string, string) {
 
 func main() {
 
-	var host = flag.String("libpostal-host", "", "The address of the libpostal endpoint")
+	var host = flag.String("libpostal-host", "", "The host for the libpostal endpoint")
+	var port = flag.Int("libpostal-port", 8080, "The host for the libpostal port")
 	var out = flag.String("output", "libpostal.csv", "Where to write output data")
 	var processes = flag.Int("processes", (runtime.NumCPU() * 2), "The number of concurrent processes to clone data with")
 
@@ -101,6 +102,8 @@ func main() {
 
 	var ttq int64
 	var files int64
+
+	endpoint := fmt.Sprintf("http://%s:%d", *host, *port)
 
 	fieldnames := []string{"wof:id", "sg:address", "lp:results"}
 
@@ -128,7 +131,7 @@ func main() {
 			panic(err)
 		}
 
-		t, address, results := parse(*host, feature)
+		t, address, results := parse(endpoint, feature)
 
 		id := feature.Id()
 

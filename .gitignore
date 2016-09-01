@@ -6,3 +6,4 @@ bin
 !bin/.gitignore
 *.log
 *.json
+*.csv
