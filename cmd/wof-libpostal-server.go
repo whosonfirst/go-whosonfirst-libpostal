@@ -228,6 +228,10 @@ func main() {
 			*pidfile = filepath.Join(cwd, fname)
 		}
 
+		if *pidfile == "-" {
+			return		   	    
+		}
+		
 		fh, err := os.Create(*pidfile)
 
 		if err != nil {
