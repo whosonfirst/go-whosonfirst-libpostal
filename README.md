@@ -34,6 +34,7 @@ This exposes all the usual Go [expvar]() debugging output along with the followi
 
 * AvgParse
 * AvgExpand
+* ErrInput
 * ErrRead
 * ErrMarshal
 * ErrUnmarshal

@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"expvar"
 	"flag"
 	"fmt"
@@ -25,6 +26,7 @@ var (
 	readErrors      *expvar.Int
 	marshalErrors   *expvar.Int
 	unmarshalErrors *expvar.Int
+	inputErrors     *expvar.Int
 
 	parseRequests *expvar.Int
 	parseSuccess  *expvar.Int
@@ -43,6 +45,7 @@ func init() {
 	readErrors = expvar.NewInt("ErrRead")
 	marshalErrors = expvar.NewInt("ErrMarshal")
 	unmarshalErrors = expvar.NewInt("ErrUnmarshal")
+	inputErrors = expvar.NewInt("ErrInput")
 
 	parseRequests = expvar.NewInt("ReqParse")
 	parseSuccess = expvar.NewInt("SuccessParse")
@@ -186,6 +189,11 @@ func ParseRequest(r *http.Request, requests *expvar.Int) (*Request, error) {
 		return nil, err
 	}
 
+	if req.Query == "" {
+		inputErrors.Add(1)
+		return nil, errors.New("Missing query string")
+	}
+
 	return &req, nil
 }
 
@@ -229,9 +237,9 @@ func main() {
 		}
 
 		if *pidfile == "-" {
-			return		   	    
+			return
 		}
-		
+
 		fh, err := os.Create(*pidfile)
 
 		if err != nil {
