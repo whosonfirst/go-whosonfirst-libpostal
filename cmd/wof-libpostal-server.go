@@ -261,7 +261,6 @@ func main() {
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/parse", ParserHandler)
-	mux.HandleFunc("/parser", ParserHandler) // this is legacy from testing and should be considered DEPRICATED
 	mux.HandleFunc("/expand", ExpandHandler)
 
 	// see comments above
