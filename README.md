@@ -1,5 +1,7 @@
 # go-whosonfirst-libpostal
 
+Go tools for working with libpostal (sometimes in the service of Who's On First)
+
 ## Install
 
 ```
