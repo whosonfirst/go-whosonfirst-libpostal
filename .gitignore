@@ -7,3 +7,4 @@ bin
 *.log
 *.json
 *.csv
+.travis.yml
