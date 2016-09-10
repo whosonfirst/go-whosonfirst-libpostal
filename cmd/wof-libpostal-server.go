@@ -215,15 +215,20 @@ func ParseQuery(req *Request) (string, error) {
 		inputErrors.Add(1)
 		return "", errors.New("E_INSUFFICIENT_QUERY")
 	}
-	
+
 	opts := sanitize.DefaultOptions()
-	q := sanitize.SanitizeString(q, opts)
+	q, err := sanitize.SanitizeString(q, opts)
+
+	if err != nil {
+		inputErrors.Add(1)
+		return "", err
+	}
 
 	if q == "" {
 		inputErrors.Add(1)
-		return "", errors.New("E_INVALID_QUERY")	
+		return "", errors.New("E_INVALID_QUERY")
 	}
-	
+
 	return q, nil
 }
 
