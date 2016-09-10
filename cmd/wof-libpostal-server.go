@@ -9,6 +9,7 @@ import (
 	"github.com/facebookgo/grace/gracehttp"
 	expand "github.com/openvenues/gopostal/expand"
 	parser "github.com/openvenues/gopostal/parser"
+	sanitize "github.com/whosonfirst/go-sanitize"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -111,8 +112,15 @@ func ExpandHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	q, err := ParseQuery(req)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
 	t1 := time.Now()
-	expansions := expand.ExpandAddress(req.Query)
+	expansions := expand.ExpandAddress(q)
 	t2 := time.Since(t1)
 
 	go func(t time.Duration) {
@@ -145,8 +153,15 @@ func ParserHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	q, err := ParseQuery(req)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
 	t1 := time.Now()
-	parsed := parser.ParseAddress(req.Query)
+	parsed := parser.ParseAddress(q)
 	t2 := time.Since(t1)
 
 	go func(t time.Duration) {
@@ -189,12 +204,27 @@ func ParseRequest(r *http.Request, requests *expvar.Int) (*Request, error) {
 		return nil, err
 	}
 
-	if req.Query == "" {
-		inputErrors.Add(1)
-		return nil, errors.New("Missing query string")
-	}
-
 	return &req, nil
+}
+
+func ParseQuery(req *Request) (string, error) {
+
+	q := strings.Trim(req.Query, " ")
+
+	if q == "" {
+		inputErrors.Add(1)
+		return "", errors.New("E_INSUFFICIENT_QUERY")
+	}
+	
+	opts := sanitize.DefaultOptions()
+	q := sanitize.SanitizeString(q, opts)
+
+	if q == "" {
+		inputErrors.Add(1)
+		return "", errors.New("E_INVALID_QUERY")	
+	}
+	
+	return q, nil
 }
 
 func WriteResponse(w http.ResponseWriter, rsp interface{}, successes *expvar.Int) {

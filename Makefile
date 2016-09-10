@@ -19,6 +19,7 @@ deps:	rmdeps
 	@GOPATH=$(GOPATH) go get -u "github.com/facebookgo/grace/gracehttp"
 	@GOPATH=$(GOPATH) go get -u "github.com/openvenues/gopostal/expand"
 	@GOPATH=$(GOPATH) go get -u "github.com/openvenues/gopostal/parser"
+	@GOPATH=$(GOPATH) go get -u "github.com/whosonfirst/go-sanitize"
 
 vendor: deps
 	if test ! -d vendor; then mkdir vendor; fi
