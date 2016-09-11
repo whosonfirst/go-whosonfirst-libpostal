@@ -39,7 +39,6 @@ This exposes all the usual Go [expvar]() debugging output along with the followi
 * ErrInput
 * ErrRead
 * ErrMarshal
-* ErrUnmarshal
 * ReqExpand
 * ReqParse
 * SuccessExpand
@@ -47,10 +46,10 @@ This exposes all the usual Go [expvar]() debugging output along with the followi
 
 _Note: This endpoint is only available from the machine the server is running on._
 
-#### POST /expand
+#### GET /expand _?address=ADDRESS_
 
 ```
-curl -s -X POST http://localhost:8080/expand -d '{"query": "475 Sansome St San Francisco CA" }' | python -mjson.tool
+curl -s -X GET 'http://localhost:8080/expand?address=475+Sansome+St+San+Francisco+CA' | python -mjson.tool
 [
     "475 sansome saint san francisco california",
     "475 sansome saint san francisco ca",
@@ -59,10 +58,10 @@ curl -s -X POST http://localhost:8080/expand -d '{"query": "475 Sansome St San F
 ]
 ```
 
-#### POST /parse
+#### GET /parse _?address=ADDRESS_
 
 ```
-curl -s -X POST http://localhost:8080/parse -d '{"query": "475 Sansome St San Francisco CA" }' | python -mjson.tool
+curl -s -X GET 'http://localhost:8080/parse?address=475+Sansome+St+San+Francisco+CA' | python -mjson.tool
 [
     {
         "label": "house_number",

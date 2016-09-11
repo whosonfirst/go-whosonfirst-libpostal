@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"errors"
 	"expvar"
 	"flag"
 	"fmt"
@@ -10,7 +9,6 @@ import (
 	expand "github.com/openvenues/gopostal/expand"
 	parser "github.com/openvenues/gopostal/parser"
 	sanitize "github.com/whosonfirst/go-sanitize"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -24,10 +22,9 @@ import (
 )
 
 var (
-	readErrors      *expvar.Int
-	marshalErrors   *expvar.Int
-	unmarshalErrors *expvar.Int
-	inputErrors     *expvar.Int
+	readErrors    *expvar.Int
+	marshalErrors *expvar.Int
+	inputErrors   *expvar.Int
 
 	parseRequests *expvar.Int
 	parseSuccess  *expvar.Int
@@ -45,7 +42,6 @@ func init() {
 
 	readErrors = expvar.NewInt("ErrRead")
 	marshalErrors = expvar.NewInt("ErrMarshal")
-	unmarshalErrors = expvar.NewInt("ErrUnmarshal")
 	inputErrors = expvar.NewInt("ErrInput")
 
 	parseRequests = expvar.NewInt("ReqParse")
@@ -60,8 +56,28 @@ func init() {
 	timeToExpand = 0
 }
 
-type Request struct {
-	Query string `json:"query"`
+type Query struct {
+	Address string
+}
+
+type HTTPError struct {
+	error
+	Code    int
+	Message string
+}
+
+func (e HTTPError) Error() string {
+	return e.Message
+}
+
+func NewHTTPError(code int, message string) *HTTPError {
+
+	e := HTTPError{
+		Code:    code,
+		Message: message,
+	}
+
+	return &e
 }
 
 // because this: https://github.com/golang/go/issues/15030
@@ -80,6 +96,12 @@ func ExpvarHandlerFunc(host string) http.HandlerFunc {
 			return
 		}
 
+		_, err := IsValidMethod(r, []string{"GET"})
+
+		if err != nil {
+			http.Error(w, err.Error(), err.Code)
+		}
+
 		// This is copied wholesale from
 		// https://golang.org/src/expvar/expvar.go
 
@@ -89,6 +111,7 @@ func ExpvarHandlerFunc(host string) http.HandlerFunc {
 		first := true
 
 		expvar.Do(func(kv expvar.KeyValue) {
+
 			if !first {
 				fmt.Fprintf(w, ",\n")
 			}
@@ -105,22 +128,15 @@ func ExpvarHandlerFunc(host string) http.HandlerFunc {
 
 func ExpandHandler(w http.ResponseWriter, r *http.Request) {
 
-	req, err := ParseRequest(r, expandRequests)
+	address, err := GetAddress(r)
 
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	q, err := ParseQuery(req)
-
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, err.Error(), err.Code)
 		return
 	}
 
 	t1 := time.Now()
-	expansions := expand.ExpandAddress(q)
+	expansions := expand.ExpandAddress(address)
 	t2 := time.Since(t1)
 
 	go func(t time.Duration) {
@@ -146,22 +162,15 @@ func ExpandHandler(w http.ResponseWriter, r *http.Request) {
 
 func ParserHandler(w http.ResponseWriter, r *http.Request) {
 
-	req, err := ParseRequest(r, parseRequests)
+	address, err := GetAddress(r)
 
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	q, err := ParseQuery(req)
-
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		http.Error(w, err.Error(), err.Code)
 		return
 	}
 
 	t1 := time.Now()
-	parsed := parser.ParseAddress(q)
+	parsed := parser.ParseAddress(address)
 	t2 := time.Since(t1)
 
 	go func(t time.Duration) {
@@ -185,48 +194,85 @@ func ParserHandler(w http.ResponseWriter, r *http.Request) {
 	WriteResponse(w, parsed, parseSuccess)
 }
 
-func ParseRequest(r *http.Request, requests *expvar.Int) (*Request, error) {
+func GetAddress(r *http.Request) (string, *HTTPError) {
 
-	requests.Add(1)
-
-	q, err := ioutil.ReadAll(r.Body)
+	_, err := IsValidMethod(r, []string{"GET"})
 
 	if err != nil {
-		readErrors.Add(1)
-		return nil, err
-	}
-
-	var req Request
-	err = json.Unmarshal(q, &req)
-
-	if err != nil {
-		unmarshalErrors.Add(1)
-		return nil, err
-	}
-
-	return &req, nil
-}
-
-func ParseQuery(req *Request) (string, error) {
-
-	q := strings.Trim(req.Query, " ")
-
-	if q == "" {
-		inputErrors.Add(1)
-		return "", errors.New("E_INSUFFICIENT_QUERY")
-	}
-
-	opts := sanitize.DefaultOptions()
-	q, err := sanitize.SanitizeString(q, opts)
-
-	if err != nil {
-		inputErrors.Add(1)
 		return "", err
 	}
 
+	query, err := ParseRequest(r, parseRequests)
+
+	if err != nil {
+		// log.Printf("parse error %s (%d)\n", err.Error(), err.Code)
+		return "", err
+	}
+
+	q, err := ParseQuery(query)
+
+	if err != nil {
+		// log.Printf("query error %s (%d)\n", err.Error(), err.Code)
+		return "", err
+	}
+
+	return q, nil
+}
+
+func IsValidMethod(r *http.Request, allowed []string) (bool, *HTTPError) {
+
+	method := r.Method
+	ok := false
+
+	for _, this := range allowed {
+
+		if this == method {
+			ok = true
+			break
+		}
+	}
+
+	if !ok {
+		readErrors.Add(1)
+		return false, NewHTTPError(http.StatusMethodNotAllowed, "")
+	}
+
+	return true, nil
+}
+
+func ParseRequest(r *http.Request, requests *expvar.Int) (*Query, *HTTPError) {
+
+	requests.Add(1)
+
+	query := r.URL.Query()
+
+	address := strings.Trim(query.Get("address"), " ")
+
+	if address == "" {
+		inputErrors.Add(1)
+		return nil, NewHTTPError(http.StatusBadRequest, "E_INSUFFICIENT_QUERY")
+	}
+
+	q := Query{
+		Address: address,
+	}
+
+	return &q, nil
+}
+
+func ParseQuery(query *Query) (string, *HTTPError) {
+
+	opts := sanitize.DefaultOptions()
+	q, err := sanitize.SanitizeString(query.Address, opts)
+
+	if err != nil {
+		inputErrors.Add(1)
+		return "", NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+
 	if q == "" {
 		inputErrors.Add(1)
-		return "", errors.New("E_INVALID_QUERY")
+		return "", NewHTTPError(http.StatusBadRequest, "E_INVALID_QUERY")
 	}
 
 	return q, nil
