@@ -91,7 +91,7 @@ _Note: This endpoint is only available from the machine the server is running on
 ```
 $> wof-libpostal-crawl -options /path/to/whosonfirst-data-venue-us/data
 
-Usage of wof-libpostal-crawl:
+Usage of ./bin/wof-libpostal-crawl:
   -libpostal-host string
     		  The host for the libpostal endpoint
   -libpostal-port int
@@ -100,9 +100,11 @@ Usage of wof-libpostal-crawl:
     	  Where to write output data (default "libpostal.csv")
   -processes int
     	     The number of concurrent processes to clone data with (default 16)
+  -properties string
+    	      A comma-separated list of GeoJSON properties used to construct an address (default "sg:address,sg:city,sg:province,sg:postcode")
 ```
 
-`wof-libpostal-crawl` traverses a directory containin Who's On First records and queries an instance of `wof-libpostal-server` with an address string derived from SimpleGeo (`sg:`) properties that can be used to populate `addr:` properties. For example, this:
+`wof-libpostal-crawl` traverses a directory containin GeoJSON files and queries an instance of `wof-libpostal-server` with an address string derived from one or more properties in the GeoJSON feature. For example, this:
 
 ```
 ./bin/wof-libpostal-crawl -libpostal-host localhost -processes 200 /usr/local/data/whosonfirst-data-venue-au/data/
@@ -112,12 +114,12 @@ parsed 697614 files in /usr/local/data/whosonfirst-data-venue-au/data/ in 314.43
 Produces a file that looks like this:
 
 ```
-wof:id,sg:address,lp:results
+id,address,results
 336966001,343 Montague Rd West End QLD 4810,"[{""label"":""house_number"",""value"":""343""},{""label"":""road"",""value"":""montague rd""},{""label"":""city_district"",""value"":""west end""},{""label"":""state"",""value"":""qld""},{""label"":""postcode"",""value"":""4810""}]"
 186121023,3/ 53 Smith St Kempsey NSW 2440,"[{""label"":""level"",""value"":""3""},{""label"":""house_number"",""value"":""/ 53""},{""label"":""road"",""value"":""smith st""},{""label"":""suburb"",""value"":""kempsey""},{""label"":""state"",""value"":""nsw""},{""label"":""postcode"",""value"":""2440""}]"
-```
 
-_As mentioned `wof-libpostal-crawl` is currently designed for use with Who's On First documents with specific SimpleGeo prefixed keys: `sg:address, sg:city, sg:province, sg:postcode`. It will eventually be adapted for other things._
+... and so on
+```
 
 ## Performance and load testing
 

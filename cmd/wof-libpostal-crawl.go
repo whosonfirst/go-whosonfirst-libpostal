@@ -8,6 +8,7 @@ import (
 	"github.com/whosonfirst/go-whosonfirst-csv"
 	"github.com/whosonfirst/go-whosonfirst-geojson"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
 	"runtime"
@@ -24,18 +25,13 @@ type LibpostalElement struct {
 	Value string `json:"value"`
 }
 
-func parse(endpoint string, f *geojson.WOFFeature) (time.Duration, string, string) {
-
-	parts := []string{
-		"properties.sg:address",
-		"properties.sg:city",
-		"properties.sg:province",
-		"properties.sg:postcode",
-	}
+func parse(endpoint string, f *geojson.WOFFeature, properties []string) (time.Duration, string, string) {
 
 	addr := make([]string, 0)
 
-	for _, k := range parts {
+	for _, k := range properties {
+
+		k = fmt.Sprintf("properties.%s", k)
 
 		v, ok := f.StringValue(k)
 
@@ -87,6 +83,7 @@ func main() {
 	var host = flag.String("libpostal-host", "", "The host for the libpostal endpoint")
 	var port = flag.Int("libpostal-port", 8080, "The host for the libpostal port")
 	var out = flag.String("output", "libpostal.csv", "Where to write output data")
+	var props = flag.String("properties", "sg:address,sg:city,sg:province,sg:postcode", "A comma-separated list of GeoJSON properties used to construct an address")
 	var processes = flag.Int("processes", (runtime.NumCPU() * 2), "The number of concurrent processes to clone data with")
 
 	flag.Parse()
@@ -99,12 +96,27 @@ func main() {
 
 	endpoint := fmt.Sprintf("http://%s:%d", *host, *port)
 
-	fieldnames := []string{"wof:id", "sg:address", "lp:results"}
+	properties := make([]string, 0)
+
+	for _, k := range strings.Split(*props, ",") {
+
+		k = strings.Trim(k, " ")
+
+		if k != "" {
+			properties = append(properties, k)
+		}
+	}
+
+	if len(properties) == 0 {
+		log.Fatal("Invalid properties list")
+	}
+
+	fieldnames := []string{"id", "address", "results"}
 
 	writer, err := csv.NewDictWriterFromPath(*out, fieldnames)
 
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 
 	writer.WriteHeader()
@@ -125,7 +137,7 @@ func main() {
 			panic(err)
 		}
 
-		t, address, results := parse(endpoint, feature)
+		t, address, results := parse(endpoint, feature, properties)
 
 		id := feature.Id()
 
@@ -134,9 +146,9 @@ func main() {
 			str_id := strconv.Itoa(id)
 
 			row := make(map[string]string)
-			row["wof:id"] = str_id
-			row["sg:address"] = address
-			row["lp:results"] = results
+			row["id"] = str_id
+			row["address"] = address
+			row["results"] = results
 
 			wmu.Lock()
 			writer.WriteRow(row)
