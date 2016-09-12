@@ -26,27 +26,13 @@ Usage of wof-libpostal-server:
 
 _Note you will need to install the underlying [libpostal](https://github.com/openvenues/libpostal) C library yourself in order for `wof-libpostal-server` to work._
 
-`wof-libpostal-server` exposes the following endpoint
+`wof-libpostal-server` exposes the following endpoints:
 
 ### Endpoints
 
-#### GET /debug/vars
-
-This endpoint exposes all the usual Go [expvar](https://golang.org/pkg/expvar/) debugging output along with the following additional properies:
-
-* AvgParse
-* AvgExpand
-* ErrInput
-* ErrRead
-* ErrMarshal
-* ReqExpand
-* ReqParse
-* SuccessExpand
-* SuccessParse
-
-_Note: This endpoint is only available from the machine the server is running on._
-
 #### GET /expand _?address=ADDRESS_
+
+This endpoint accepts a single `address` parameter and expands it into one or more normalized forms suitable for geocoder queries.
 
 ```
 curl -s -X GET 'http://localhost:8080/expand?address=475+Sansome+St+San+Francisco+CA' | python -mjson.tool
@@ -59,6 +45,8 @@ curl -s -X GET 'http://localhost:8080/expand?address=475+Sansome+St+San+Francisc
 ```
 
 #### GET /parse _?address=ADDRESS_
+
+This endpoint accepts a single `address` parameter and parses it in to its components.
 
 ```
 curl -s -X GET 'http://localhost:8080/parse?address=475+Sansome+St+San+Francisco+CA' | python -mjson.tool
@@ -81,6 +69,22 @@ curl -s -X GET 'http://localhost:8080/parse?address=475+Sansome+St+San+Francisco
     }
 ]
 ```
+
+#### GET /debug/vars
+
+This endpoint exposes all the usual Go [expvar](https://golang.org/pkg/expvar/) debugging output along with the following additional properies:
+
+* AvgParse
+* AvgExpand
+* ErrInput
+* ErrRead
+* ErrMarshal
+* ReqExpand
+* ReqParse
+* SuccessExpand
+* SuccessParse
+
+_Note: This endpoint is only available from the machine the server is running on._
 
 ## wof-libpostal-crawl
 
