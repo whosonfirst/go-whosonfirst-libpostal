@@ -168,7 +168,7 @@ curl -s http://192.168.1.158:8080/debug/vars | python -mjson.tool | grep Err
     "ErrUnmarshal": 1037,
 ```
 
-So that means the error were a result of weird JSON being sent to the server. The discontinuity between `wof-libpostal-server` and `libpostal-rest` is largely that the latter doesn’t any error checking when parsing JSON so it appears to be passing empty strings to libpostal.
+So that means the error were a result of weird JSON being sent to the server. The discontinuity between `wof-libpostal-server` and [libpostal-rest](https://github.com/johnlonganecker/libpostal-rest) is largely that the latter doesn’t any error checking when parsing JSON so it appears to be passing empty strings to libpostal.
 
 ## See also
 
