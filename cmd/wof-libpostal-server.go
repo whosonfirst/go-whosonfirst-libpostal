@@ -90,7 +90,7 @@ func ExpvarHandlerFunc(host string) http.HandlerFunc {
 
 		remote := strings.Split(r.RemoteAddr, ":")
 
-		if remote[0] != host {
+		if remote[0] != "127.0.0.1" && remote[0] != host {
 
 			http.Error(w, "No soup for you!", http.StatusForbidden)
 			return
