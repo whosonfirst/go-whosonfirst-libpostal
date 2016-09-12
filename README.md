@@ -121,9 +121,9 @@ _As mentioned `wof-libpostal-crawl` is currently designed for use with Who's On 
 
 ## Performance and load testing
 
-### wof-libpostal-server
-
 This assumes the server a pair of single-CPU m3.medium instances, fronted by a load-balancer, and a URLs file containing 1517965 addresses in California. There is also a URLs file with 18M addresses from most of SimpleGeo but that is 8GB and I got bored waiting for [siege](https://www.joedog.org/siege-home/) to it to load it in to memory...
+
+### expand
 
 ```
 $> siege -c 500 -i -f urls-expand.txt
@@ -144,7 +144,11 @@ Successful transactions:      147072
 Failed transactions:	           0
 Longest transaction:	        1.16
 Shortest transaction:	        0.00
+```
 
+### parse
+
+```
 $> siege -c 500 -i -f urls-parse.txt 
 ** SIEGE 3.0.5
 ** Preparing 500 concurrent users for battle.
