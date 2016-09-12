@@ -123,7 +123,7 @@ _As mentioned `wof-libpostal-crawl` is currently designed for use with Who's On 
 
 ### wof-libpostal-server
 
-This assumes the server running on a pair of single-CPU m3.medium instances, fronted by a load-balancer, reading from a URLs file containing 1517965 addresses in California. There is also a URLs file with 18M addresses from most of SimpleGeo but that is 8GB and I got bored waiting for [siege](https://www.joedog.org/siege-home/) to it to load it in to memory...
+This assumes the server a pair of single-CPU m3.medium instances, fronted by a load-balancer, and a URLs file containing 1517965 addresses in California. There is also a URLs file with 18M addresses from most of SimpleGeo but that is 8GB and I got bored waiting for [siege](https://www.joedog.org/siege-home/) to it to load it in to memory...
 
 ```
 $> siege -c 500 -i -f urls-expand.txt
