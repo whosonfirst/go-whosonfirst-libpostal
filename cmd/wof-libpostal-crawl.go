@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bytes"
 	"encoding/json"
 	"flag"
 	"fmt"
@@ -17,10 +16,6 @@ import (
 	"sync"
 	"time"
 )
-
-type LibpostalQuery struct {
-	Query string `json:"query"`
-}
 
 type LibpostalResponse []LibpostalElement
 
@@ -51,17 +46,16 @@ func parse(endpoint string, f *geojson.WOFFeature) (time.Duration, string, strin
 
 	str_addr := strings.Join(addr, " ")
 
-	q := LibpostalQuery{
-		Query: str_addr,
-	}
-
-	str_json, _ := json.Marshal(q)
-
-	url := fmt.Sprintf("%s/parser", endpoint)
+	url := fmt.Sprintf("%s/parse", endpoint)
 
 	t1 := time.Now()
 
-	req, err := http.NewRequest("POST", url, bytes.NewBuffer(str_json))
+	req, err := http.NewRequest("GET", url, nil)
+
+	q := req.URL.Query()
+	q.Add("address", str_addr)
+
+	req.URL.RawQuery = q.Encode()
 
 	client := &http.Client{}
 	resp, err := client.Do(req)
