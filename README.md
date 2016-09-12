@@ -123,52 +123,47 @@ _As mentioned `wof-libpostal-crawl` is currently designed for use with Who's On 
 
 ### wof-libpostal-server
 
-This assumes the server running on a single-CPU m3.medium instance reading from a URLs file containing 1517965 addresses in California. There is also a URLs file with 18M addresses from most of SimpleGeo but that is 8GB and I got bored waiting for [siege](https://www.joedog.org/siege-home/) to it to load it in to memory...
-
-_Note: These performance tests are for an earlier verion of `wof-libpostal-server` whose input was a JSON encoded POST body. Since that is no longer the case some of the errors and timings discussed below are no longer relevant._
+This assumes the server running on a pair of single-CPU m3.medium instances, fronted by a load-balancer, reading from a URLs file containing 1517965 addresses in California. There is also a URLs file with 18M addresses from most of SimpleGeo but that is 8GB and I got bored waiting for [siege](https://www.joedog.org/siege-home/) to it to load it in to memory...
 
 ```
-siege -c 1000 -i -f urls-sm.txt
+$> siege -c 500 -i -f urls-expand.txt
 ** SIEGE 3.0.5
-** Preparing 1000 concurrent users for battle.
-The server is now under siege..      done.
-siege aborted due to excessive socket failure; you
-can change the failure threshold in $HOME/.siegerc
+** Preparing 500 concurrent users for battle.
+The server is now under siege...  C-c C-c
+Lifting the server siege...      done.
 
-Transactions:		      153686 hits
-Availability:		       99.33 %
-Elapsed time:		       92.96 secs
-Data transferred:	       27.33 MB
-Response time:		        0.10 secs
-Transaction rate:	     1653.25 trans/sec
-Throughput:		        0.29 MB/sec
-Concurrency:		      160.53
-Successful transactions:      153686
-Failed transactions:	        1037
-Longest transaction:	        1.32
+Transactions:		      147245 hits
+Availability:		      100.00 %
+Elapsed time:		      148.14 secs
+Data transferred:	       32.60 MB
+Response time:		        0.00 secs
+Transaction rate:	      993.96 trans/sec
+Throughput:		        0.22 MB/sec
+Concurrency:		        2.93
+Successful transactions:      147072
+Failed transactions:	           0
+Longest transaction:	        1.16
 Shortest transaction:	        0.00
+
+$> siege -c 500 -i -f urls-parse.txt 
+** SIEGE 3.0.5
+** Preparing 500 concurrent users for battle.
+The server is now under siege...  C-c C-c
+Lifting the server siege...      done.
+
+Transactions:		      131044 hits
+Availability:		      100.00 %
+Elapsed time:		      131.96 secs
+Data transferred:	       23.17 MB
+Response time:		        0.00 secs
+Transaction rate:	      993.06 trans/sec
+Throughput:		        0.18 MB/sec
+Concurrency:		        3.85
+Successful transactions:      130895
+Failed transactions:	           0
+Longest transaction:	        5.06
+Shortest transaction:	        0.00 
 ```
-
-And this is what it looks like on the server side of things (again the same m3.medium instance):
-
-```
-curl -s http://192.168.1.158:8080/debug/vars | python -mjson.tool | grep Parse
-
-    "AvgParse": 0.14599639355493366,
-    "ReqParse": 154723,
-    "SuccessParse": 153686
-```
-
-Average time is in milliseconds. When we look at the difference between requests and successes we see:
-
-```
-curl -s http://192.168.1.158:8080/debug/vars | python -mjson.tool | grep Err
-    "ErrMarshal": 0,
-    "ErrRead": 0,
-    "ErrUnmarshal": 1037,
-```
-
-So that means the error were a result of weird JSON being sent to the server. The discontinuity between `wof-libpostal-server` and [libpostal-rest](https://github.com/johnlonganecker/libpostal-rest) is largely that the latter doesn’t any error checking when parsing JSON so it appears to be passing empty strings to libpostal.
 
 ## See also
 
