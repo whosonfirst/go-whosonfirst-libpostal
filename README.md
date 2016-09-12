@@ -32,7 +32,7 @@ _Note you will need to install the underlying [libpostal](https://github.com/ope
 
 #### GET /debug/vars
 
-This exposes all the usual Go [expvar]() debugging output along with the following additional properies:
+This endpoint exposes all the usual Go [expvar](https://golang.org/pkg/expvar/) debugging output along with the following additional properies:
 
 * AvgParse
 * AvgExpand
