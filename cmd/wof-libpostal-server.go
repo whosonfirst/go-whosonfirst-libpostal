@@ -191,10 +191,16 @@ func ParserHandler(w http.ResponseWriter, r *http.Request) {
 
 	}(t2)
 
-	WriteResponse(w, parsed, parseSuccess)
+	query := r.URL.Query()
+
+	if query.Get("format") == "dict" {
+		WriteResponse(w, FormatParsed(parsed), parseSuccess)
+	} else {
+		WriteResponse(w, parsed, parseSuccess)
+	}
 }
 
-func FormatParsed(parsed interface{}) map[string][]string {
+func FormatParsed(parsed []parser.ParsedComponent) map[string][]string {
 
 	rsp := make(map[string][]string)
 
