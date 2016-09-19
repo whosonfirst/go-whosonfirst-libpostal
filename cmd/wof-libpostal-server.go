@@ -194,6 +194,28 @@ func ParserHandler(w http.ResponseWriter, r *http.Request) {
 	WriteResponse(w, parsed, parseSuccess)
 }
 
+func FormatParsed(parsed interface{}) map[string][]string {
+
+	rsp := make(map[string][]string)
+
+	for _, component := range parsed {
+
+		key := component.Label
+		value := component.Value
+
+		possible, ok := rsp[key]
+
+		if !ok {
+			possible = make([]string, 0)
+		}
+
+		possible = append(possible, value)
+		rsp[key] = possible
+	}
+
+	return rsp
+}
+
 func GetAddress(r *http.Request) (string, *HTTPError) {
 
 	_, err := IsValidMethod(r, []string{"GET"})
