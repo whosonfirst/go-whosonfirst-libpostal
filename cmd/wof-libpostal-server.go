@@ -193,7 +193,7 @@ func ParserHandler(w http.ResponseWriter, r *http.Request) {
 
 	query := r.URL.Query()
 
-	if query.Get("format") == "dict" {
+	if query.Get("format") == "keys" {
 		WriteResponse(w, FormatParsed(parsed), parseSuccess)
 	} else {
 		WriteResponse(w, parsed, parseSuccess)
