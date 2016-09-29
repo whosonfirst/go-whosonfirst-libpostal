@@ -52,7 +52,9 @@ curl -s -X GET 'https://libpostal.mapzen.com/parse?address=475+Sansome+St+San+Fr
 ]
 ```
 
-By default both [Libpostal](https://github.com/openvenues/libpostal) and the Libpostal API return results a list of dictionaries, each containing a `label` and `value` key. This is because...
+By default both [Libpostal](https://github.com/openvenues/libpostal) and the Libpostal API return results a list of dictionaries, each containing a `label` and `value` key. This is because there are occasions when a given key may have multiple values, for example an address that contains a cross-street.
+
+If you would prefer to have API results returned as a simple dictionary with labels as keys and values as lists of possible strings you should append the `format=keys` parameter.
 
 |parameter|value|
 | :--- | :--- |
@@ -60,7 +62,6 @@ By default both [Libpostal](https://github.com/openvenues/libpostal) and the Lib
 | `api_key` | [get yours here](https://mapzen.com/developers) |
 | `format` | keys |
 
-If you would prefer to haves results returned instead as a simple dictionary with labels as keys and values as lists of possible strings you should append the `format=keys` parameter.
 
 ```
 curl -s -X GET 'https://libpostal.mapzen.com/parse?address=475+Sansome+St+San+Francisco+CA&format=keys' | python -mjson.tool
