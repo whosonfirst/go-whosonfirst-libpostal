@@ -6,12 +6,12 @@ The 'parse' endpoint analyzes an address string and returns its component parts 
 
 ## GET /expand _?address=ADDRESS&apikey=APIKEY_
 
-This endpoint accepts a single address parameter and expands it into one or more normalized forms suitable for geocoder queries.
-
 |parameter|value|
 | :--- | :--- |
 | `api_key` | [get yours here](https://mapzen.com/developers) |
 | `address` | 475+Sansome+St+San+Francisco+CA |
+
+This endpoint accepts a single address parameter and expands it into one or more normalized forms suitable for geocoder queries.
 
 ```
 curl -s -X GET 'https://libpostal.mapzen.com/expand?address=475+Sansome+St+San+Francisco+CA&apikey=APIKEY' | python -mjson.tool
@@ -25,12 +25,12 @@ curl -s -X GET 'https://libpostal.mapzen.com/expand?address=475+Sansome+St+San+F
 
 ## GET /parse _?address=ADDRESS&apikey=APIKEY_
 
-This endpoint accepts a single `address` parameter and parses it in to its components.
-
 |parameter|value|
 | :--- | :--- |
 | `api_key` | [get yours here](https://mapzen.com/developers) |
 | `address` | 475+Sansome+St+San+Francisco+CA |
+
+This endpoint accepts a single `address` parameter and parses it in to its components.
 
 ```
 curl -s -X GET 'https://libpostal.mapzen.com/parse?address=475+Sansome+St+San+Francisco+CA&apikey=APIKEY' | python -mjson.tool
@@ -56,15 +56,13 @@ curl -s -X GET 'https://libpostal.mapzen.com/parse?address=475+Sansome+St+San+Fr
 
 By default both Libpostal and the Libpostal API return results a list of dictionaries, each containing a `label` and `value` key. This is because...
 
-If you would prefer to return a simple dictionary with labels as keys and values as lists of possible strings you should append the `format=keys` parameter.
-
 |parameter|value|
 | :--- | :--- |
 | `api_key` | [get yours here](https://mapzen.com/developers) |
 | `address` | 475+Sansome+St+San+Francisco+CA |
 | `format` | keys |
 
-_Remember: all parameters should be URL encoded._
+If you would prefer to return a simple dictionary with labels as keys and values as lists of possible strings you should append the `format=keys` parameter.
 
 ```
 curl -s -X GET 'https://libpostal.mapzen.com/parse?address=475+Sansome+St+San+Francisco+CA&format=keys' | python -mjson.tool
