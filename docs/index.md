@@ -1,6 +1,6 @@
-# libpostal
+# The Mapzen Libpostal API
 
-The Mapzen libpostal API is a ... around [the libpostal C library](https://github.com/openvenues/libpostal) for parsing and normalizing street addresses in to data structures. The Libpostal API has two endpoints that are exposed as HTTP `GET` requests, returning results as JSON data structures.
+The Mapzen Libpostal API is a ... around [the Libpostal C library](https://github.com/openvenues/libpostal) for parsing and normalizing street addresses in to data structures. The Libpostal API has two endpoints that are exposed as HTTP `GET` requests, returning results as JSON data structures.
 
 ## GET /expand _?address=ADDRESS&apikey=APIKEY_
 
@@ -52,7 +52,7 @@ curl -s -X GET 'https://libpostal.mapzen.com/parse?address=475+Sansome+St+San+Fr
 ]
 ```
 
-By default both [libpostal](https://github.com/openvenues/libpostal) and the libpostal API return results a list of dictionaries, each containing a `label` and `value` key. This is because...
+By default both [Libpostal](https://github.com/openvenues/libpostal) and the Libpostal API return results a list of dictionaries, each containing a `label` and `value` key. This is because...
 
 |parameter|value|
 | :--- | :--- |
