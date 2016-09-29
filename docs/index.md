@@ -8,13 +8,13 @@ The 'parse' endpoint analyzes an address string and returns its component parts 
 
 |parameter|value|
 | :--- | :--- |
-| `api_key` | [get yours here](https://mapzen.com/developers) |
 | `address` | 475+Sansome+St+San+Francisco+CA |
+| `api_key` | [get yours here](https://mapzen.com/developers) |
 
 This endpoint accepts a single address parameter and expands it into one or more normalized forms suitable for geocoder queries.
 
 ```
-curl -s -X GET 'https://libpostal.mapzen.com/expand?address=475+Sansome+St+San+Francisco+CA&apikey=APIKEY' | python -mjson.tool
+curl -s -X GET 'https://libpostal.mapzen.com/expand?address=475+Sansome+St+San+Francisco+CA&api_key=APIKEY' | python -mjson.tool
 [
     "475 sansome saint san francisco california",
     "475 sansome saint san francisco ca",
@@ -27,13 +27,13 @@ curl -s -X GET 'https://libpostal.mapzen.com/expand?address=475+Sansome+St+San+F
 
 |parameter|value|
 | :--- | :--- |
-| `api_key` | [get yours here](https://mapzen.com/developers) |
 | `address` | 475+Sansome+St+San+Francisco+CA |
+| `api_key` | [get yours here](https://mapzen.com/developers) |
 
 This endpoint accepts a single `address` parameter and parses it in to its components.
 
 ```
-curl -s -X GET 'https://libpostal.mapzen.com/parse?address=475+Sansome+St+San+Francisco+CA&apikey=APIKEY' | python -mjson.tool
+curl -s -X GET 'https://libpostal.mapzen.com/parse?address=475+Sansome+St+San+Francisco+CA&api_key=APIKEY' | python -mjson.tool
 [
     {
         "label": "house_number",
@@ -58,8 +58,8 @@ By default both Libpostal and the Libpostal API return results a list of diction
 
 |parameter|value|
 | :--- | :--- |
-| `api_key` | [get yours here](https://mapzen.com/developers) |
 | `address` | 475+Sansome+St+San+Francisco+CA |
+| `api_key` | [get yours here](https://mapzen.com/developers) |
 | `format` | keys |
 
 If you would prefer to return a simple dictionary with labels as keys and values as lists of possible strings you should append the `format=keys` parameter.
