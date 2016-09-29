@@ -1,8 +1,6 @@
 # libpostal
 
-The Mapzen Libpostal API is a ... around [the Libpostal C library](https://github.com/openvenues/libpostal) for parsing and normalizing street addresses. The Libpostal API has two endpoints that are exposed as HTTP `GET` requests, returning results as JSON data structures.
-
-The `/parse` endpoint analyzes an address string and returns its component parts (street number, street name, city and so on). The `/expand` endpoint analyzes an address string and returns a set of normalized equivalent strings.
+The Mapzen libpostal API is a ... around [the libpostal C library](https://github.com/openvenues/libpostal) for parsing and normalizing street addresses in to data structures. The Libpostal API has two endpoints that are exposed as HTTP `GET` requests, returning results as JSON data structures.
 
 ## GET /expand _?address=ADDRESS&apikey=APIKEY_
 
@@ -11,7 +9,7 @@ The `/parse` endpoint analyzes an address string and returns its component parts
 | `address` | 475+Sansome+St+San+Francisco+CA |
 | `api_key` | [get yours here](https://mapzen.com/developers) |
 
-This endpoint accepts a single address parameter and expands it into one or more normalized forms suitable for geocoder queries.
+The `/expand` endpoint analyzes an address string and returns a set of normalized equivalent strings.
 
 ```
 curl -s -X GET 'https://libpostal.mapzen.com/expand?address=475+Sansome+St+San+Francisco+CA&api_key=APIKEY' | python -mjson.tool
@@ -30,7 +28,7 @@ curl -s -X GET 'https://libpostal.mapzen.com/expand?address=475+Sansome+St+San+F
 | `address` | 475+Sansome+St+San+Francisco+CA |
 | `api_key` | [get yours here](https://mapzen.com/developers) |
 
-This endpoint accepts a single `address` parameter and parses it in to its components.
+The `/parse` endpoint analyzes an address string and returns its component parts (street number, street name, city and so on). 
 
 ```
 curl -s -X GET 'https://libpostal.mapzen.com/parse?address=475+Sansome+St+San+Francisco+CA&api_key=APIKEY' | python -mjson.tool
@@ -54,7 +52,7 @@ curl -s -X GET 'https://libpostal.mapzen.com/parse?address=475+Sansome+St+San+Fr
 ]
 ```
 
-By default both Libpostal and the Libpostal API return results a list of dictionaries, each containing a `label` and `value` key. This is because...
+By default both [libpostal](https://github.com/openvenues/libpostal) and the libpostal API return results a list of dictionaries, each containing a `label` and `value` key. This is because...
 
 |parameter|value|
 | :--- | :--- |
@@ -62,7 +60,7 @@ By default both Libpostal and the Libpostal API return results a list of diction
 | `api_key` | [get yours here](https://mapzen.com/developers) |
 | `format` | keys |
 
-If you would prefer to return a simple dictionary with labels as keys and values as lists of possible strings you should append the `format=keys` parameter.
+If you would prefer to haves results returned instead as a simple dictionary with labels as keys and values as lists of possible strings you should append the `format=keys` parameter.
 
 ```
 curl -s -X GET 'https://libpostal.mapzen.com/parse?address=475+Sansome+St+San+Francisco+CA&format=keys' | python -mjson.tool
