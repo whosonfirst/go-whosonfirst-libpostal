@@ -2,7 +2,7 @@
 
 The Mapzen Libpostal API is a ... around [the Libpostal C library](https://github.com/openvenues/libpostal) for parsing and normalizing street addresses. The Libpostal API has two endpoints that are exposed as HTTP `GET` requests, returning results as JSON data structures.
 
-The 'parse' endpoint analyzes an address string and returns its component parts (street number, street name, city and so on). The 'expand' endpoint analyzes an address string and returns a set of normalized equivalent strings.
+The `/parse` endpoint analyzes an address string and returns its component parts (street number, street name, city and so on). The `/expand` endpoint analyzes an address string and returns a set of normalized equivalent strings.
 
 ## GET /expand _?address=ADDRESS&apikey=APIKEY_
 
