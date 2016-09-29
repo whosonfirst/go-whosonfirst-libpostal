@@ -9,7 +9,7 @@ The Mapzen Libpostal API is a ... around [the Libpostal C library](https://githu
 | `address` | 475+Sansome+St+San+Francisco+CA |
 | `api_key` | [get yours here](https://mapzen.com/developers) |
 
-The `/expand` endpoint analyzes an address string and returns a set of normalized equivalent strings.
+The `/expand` endpoint analyzes an address string and returns a list of normalized equivalent strings.
 
 ```
 curl -s -X GET 'https://libpostal.mapzen.com/expand?address=475+Sansome+St+San+Francisco+CA&api_key=APIKEY' | python -mjson.tool
