@@ -1,6 +1,14 @@
 # The Mapzen Libpostal API
 
-The Mapzen Libpostal API is a ... around [the Libpostal C library](https://github.com/openvenues/libpostal) for parsing and normalizing street addresses in to data structures. The Libpostal API has two endpoints that are exposed as HTTP `GET` requests, returning results as JSON data structures.
+The Mapzen Libpostal API (application programming interface) is a REST-based interface to [the Libpostal C library](https://github.com/openvenues/libpostal) for parsing and normalizing street addresses in to data structures using [OpenStreetMap](http://www.openstreetmap.org/) data.
+
+[Al Barrantine](https://twitter.com/albarrentine), who is Libpostal's author, wrote an [exhaustive blog post](https://mapzen.com/blog/inside-libpostal/) describing what Libpostal is and and how it works. It is aimed at a technical audience so we'll just excerpt the short version here:
+
+> Libpostal uses machine learning and is informed by tens of millions of real-world addresses from OpenStreetMap. The entire pipeline for training the models is open source. Since OSM is a dynamic data set with thousands of contributors and the models are retrained periodically, improving them can be as easy as contributing addresses to OSM.
+
+> Each country’s addressing system has its own set of conventions and peculiarities and libpostal is designed to deal with practically all of them. It currently supports normalizations in 60 languages and can parse addresses in more than 100 countries. Geocoding using libpostal as a preprocessing step becomes drastically simpler and more consistent internationally.
+
+The Libpostal API has two endpoints that are exposed as HTTP `GET` requests, returning JSON-formatted results.
 
 ## GET /expand _?address=ADDRESS&apikey=APIKEY_
 
@@ -80,3 +88,15 @@ curl -s -X GET 'https://libpostal.mapzen.com/parse?address=475+Sansome+St+San+Fr
     ]
 }
 ```
+
+## Usage limits
+
+The Libpostal API is available for use with or without an API key. Key-less access to the API is provided as a convenience for people who are curious and want (or need) to see how things work without going through a bunch of extra steps. For any kind of serious use of the API, though, it is best to sign up for an API key. It only takes a minute (or two) and you can [get yours here](https://mapzen.com/developers) 
+
+| Queries | Without an API key | With an API key |
+| :--- | :--- | :--- |
+| per seconds | 1 | 6 |
+| per minute | 6 | n/a |
+| per day | 1, 000 | 30, 000 |
+
+If you need to make _more_ API calls to the libpostal API service, than the daily limits allow, then please [send us a note](mailto:hello@mapzen.com) letting us know what you'd like to do and we can try to work something out!
