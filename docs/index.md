@@ -12,12 +12,14 @@ The Libpostal API has two endpoints that are exposed as HTTP `GET` requests, ret
 
 ## GET /expand _?address=ADDRESS&apikey=APIKEY_
 
-|parameter|value|
+| Parameter | Value |
 | :--- | :--- |
 | `address` | 475+Sansome+St+San+Francisco+CA |
 | `api_key` | [get yours here](https://mapzen.com/developers) |
 
 The `/expand` endpoint analyzes an address string and returns a list of normalized equivalent strings.
+
+For example:
 
 ```
 curl -s -X GET 'https://libpostal.mapzen.com/expand?address=475+Sansome+St+San+Francisco+CA&api_key=APIKEY' | python -mjson.tool
@@ -31,12 +33,14 @@ curl -s -X GET 'https://libpostal.mapzen.com/expand?address=475+Sansome+St+San+F
 
 ## GET /parse _?address=ADDRESS&apikey=APIKEY_
 
-|parameter|value|
+| Parameter | Value |
 | :--- | :--- |
 | `address` | 475+Sansome+St+San+Francisco+CA |
 | `api_key` | [get yours here](https://mapzen.com/developers) |
 
 The `/parse` endpoint analyzes an address string and returns its component parts (street number, street name, city and so on). 
+
+For example:
 
 ```
 curl -s -X GET 'https://libpostal.mapzen.com/parse?address=475+Sansome+St+San+Francisco+CA&api_key=APIKEY' | python -mjson.tool
@@ -64,12 +68,13 @@ By default both [Libpostal](https://github.com/openvenues/libpostal) and the Lib
 
 If you would prefer to have API results returned as a simple dictionary with labels as keys and values as lists of possible strings you should append the `format=keys` parameter.
 
-|parameter|value|
+|Parameter|Value|
 | :--- | :--- |
 | `address` | 475+Sansome+St+San+Francisco+CA |
 | `api_key` | [get yours here](https://mapzen.com/developers) |
 | `format` | keys |
 
+For example:
 
 ```
 curl -s -X GET 'https://libpostal.mapzen.com/parse?address=475+Sansome+St+San+Francisco+CA&format=keys' | python -mjson.tool
@@ -91,12 +96,14 @@ curl -s -X GET 'https://libpostal.mapzen.com/parse?address=475+Sansome+St+San+Fr
 
 ## Usage limits
 
-The Libpostal API is available for use with or without an API key. Key-less access to the API is provided as a convenience for people who are curious and want (or need) to see how things work without going through a bunch of extra steps. For any kind of serious use of the API, though, it is best to sign up for an API key. It only takes a minute (or two) and you can [get yours here](https://mapzen.com/developers) 
-
 | Queries | Without an API key | With an API key |
 | :--- | :--- | :--- |
 | per seconds | 1 | 6 |
 | per minute | 6 | n/a |
 | per day | 1, 000 | 30, 000 |
+
+The Libpostal API is available for use with or without an API key. Key-less access to the API is provided as a convenience for people who are curious and want (or need) to see how things work without going through a bunch of extra steps.
+
+For any kind of serious use of the API, though, it is best to sign up for an API key. It only takes a minute (or two) and you can [get yours here](https://mapzen.com/developers) 
 
 If you need to make _more_ API calls to the libpostal API service, than the daily limits allow, then please [send us a note](mailto:hello@mapzen.com) letting us know what you'd like to do and we can try to work something out!
