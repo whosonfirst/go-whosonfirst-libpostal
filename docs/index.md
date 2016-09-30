@@ -94,6 +94,19 @@ curl -s -X GET 'https://libpostal.mapzen.com/parse?address=475+Sansome+St+San+Fr
 }
 ```
 
+The complete list of labels [defined in Libpostal](https://github.com/openvenues/libpostal/blob/master/src/address_parser.h) and that _may_ be returned as part of an address-parsing query are:
+
+* house
+* house_number
+* road
+* suburb
+* city_district
+* city
+* state_district
+* state
+* postal_code
+* country
+
 ## Usage limits
 
 | Queries | Without an API key | With an API key |
