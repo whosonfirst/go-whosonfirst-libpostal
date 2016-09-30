@@ -2,7 +2,7 @@
 
 The Mapzen Libpostal API (application programming interface) is a REST-based interface to [the Libpostal C library](https://github.com/openvenues/libpostal) for parsing and normalizing street addresses in to data structures using [OpenStreetMap](http://www.openstreetmap.org/) data.
 
-[Al Barrantine](https://twitter.com/albarrentine), who is Libpostal's author, wrote an [exhaustive blog post](https://mapzen.com/blog/inside-libpostal/) describing what Libpostal is and and how it works. It is aimed at a technical audience so we'll just excerpt the short version here:
+[Al Barrentine](https://twitter.com/albarrentine), who is Libpostal's author, wrote an [exhaustive blog post](https://mapzen.com/blog/inside-libpostal/) describing what Libpostal is and and how it works. It is aimed at a technical audience so we'll just excerpt the short version here:
 
 > Libpostal uses machine learning and is informed by tens of millions of real-world addresses from OpenStreetMap. The entire pipeline for training the models is open source. Since OSM is a dynamic data set with thousands of contributors and the models are retrained periodically, improving them can be as easy as contributing addresses to OSM.
 
