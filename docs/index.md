@@ -10,21 +10,20 @@ The Mapzen Libpostal API (application programming interface) is a REST-based int
 
 The Libpostal API has two endpoints that are exposed as HTTP `GET` requests, returning JSON-formatted results.
 
-## GET /expand _?address=ADDRESS&api_key=APIKEY_
+## GET /expand _?address=ADDRESS_
 
 The `/expand` endpoint analyzes an address string and returns a list of normalized equivalent strings.
 
 ### Arguments
 
-| Parameter | Value | Required |
+| Parameter | Sample Value | Required |
 | :--- | :--- | :--- |
-| `address` | 475+Sansome+St+San+Francisco+CA | yes |
-| `api_key` | [get yours here](https://mapzen.com/developers) | [not necessarily](#usage-limits) |
+| `address` | "475 Sansome St San Francisco CA" | yes |
 
 ### Example
 
 ```
-curl -s -X GET 'https://libpostal.mapzen.com/expand?address=475+Sansome+St+San+Francisco+CA&api_key=APIKEY' | python -mjson.tool
+curl -s -X GET 'https://libpostal.mapzen.com/expand?address=475+Sansome+St+San+Francisco+CA' | python -mjson.tool
 [
     "475 sansome saint san francisco california",
     "475 sansome saint san francisco ca",
@@ -33,22 +32,21 @@ curl -s -X GET 'https://libpostal.mapzen.com/expand?address=475+Sansome+St+San+F
 ]
 ```
 
-## GET /parse _?address=ADDRESS&api_key=APIKEY_
+## GET /parse _?address=ADDRESS_
 
 The `/parse` endpoint analyzes an address string and returns its component parts (street number, street name, city and so on).
 
 ### Arguments
 
-| Parameter | Value | Required |
+| Parameter | Sample Value | Required |
 | :--- | :--- | :--- |
-| `address` | 475+Sansome+St+San+Francisco+CA | yes |
-| `api_key` | [get yours here](https://mapzen.com/developers) | [not necessarily](#usage-limits) |
+| `address` | "475 Sansome St San Francisco CA" | yes |
 | `format` | keys | no |
 
 ### Example
 
 ```
-curl -s -X GET 'https://libpostal.mapzen.com/parse?address=475+Sansome+St+San+Francisco+CA&api_key=APIKEY' | python -mjson.tool
+curl -s -X GET 'https://libpostal.mapzen.com/parse?address=475+Sansome+St+San+Francisco+CA' | python -mjson.tool
 [
     {
         "label": "house_number",
@@ -76,7 +74,7 @@ If you would prefer to have API results returned as a simple dictionary with lab
 ### Example
 
 ```
-curl -s -X GET 'https://libpostal.mapzen.com/parse?address=475+Sansome+St+San+Francisco+CA&format=keys&api_key=APIKEY' | python -mjson.tool
+curl -s -X GET 'https://libpostal.mapzen.com/parse?address=475+Sansome+St+San+Francisco+CA&format=keys' | python -mjson.tool
 {
     "city": [
         "san francisco"
@@ -110,14 +108,6 @@ Depending on the address string you are parsing only some of those labels may be
 
 ## Usage limits
 
-| Queries | Without an API key | With an API key |
-| :--- | :--- | :--- |
-| per seconds | 1 | 6 |
-| per minute | 6 | n/a |
-| per day | 1, 000 | 30, 000 |
-
 The Libpostal API is available for use with or without an API key. Key-less access to the API is provided as a convenience for people who are curious and want (or need) to see how things work without going through a bunch of extra steps.
 
-For any kind of serious use of the API, though, it is best to sign up for an API key. It only takes a minute (or two) and you can [get yours here](https://mapzen.com/developers). 
-
-If you need to make _more_ API calls to the libpostal API service, than the daily limits allow, then please [send us a note](mailto:hello@mapzen.com) letting us know what you'd like to do and we can try to work something out!
+For any kind of serious use of the API, though, it is best to sign up for an API key. [Read more about API key signup and rate limits](https://mapzen.com/documentation/overview/).
