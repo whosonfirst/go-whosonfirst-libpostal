@@ -16,9 +16,9 @@ The `/expand` endpoint analyzes an address string and returns a list of normaliz
 
 ### Arguments
 
-| Parameter | Value | Required |
+| Parameter | Sample Value | Required |
 | :--- | :--- | :--- |
-| `address` | 475+Sansome+St+San+Francisco+CA | yes |
+| `address` | "475 Sansome St San Francisco CA" | yes |
 
 ### Example
 
@@ -38,9 +38,9 @@ The `/parse` endpoint analyzes an address string and returns its component parts
 
 ### Arguments
 
-| Parameter | Value | Required |
+| Parameter | Sample Value | Required |
 | :--- | :--- | :--- |
-| `address` | 475+Sansome+St+San+Francisco+CA | yes |
+| `address` | "475 Sansome St San Francisco CA" | yes |
 | `format` | keys | no |
 
 ### Example
