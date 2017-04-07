@@ -25,6 +25,7 @@ func main() {
 		fmt.Printf("Name is %s\n", f.Name())
 		fmt.Printf("Placetype is %s\n", f.Placetype())
 
+		fmt.Printf("Hierarchy is %s\n", f.Hierarchy())
 	}
 
 }

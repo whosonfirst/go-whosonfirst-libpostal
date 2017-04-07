@@ -1,5 +1,5 @@
 *~
 pkg
 src
-bin/dump
-bin/pip
+bin/wof-*
+!vendor/src

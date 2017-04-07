@@ -4,6 +4,7 @@ import (
 	"fmt"
 )
 
+// Error is a mymysql error.
 // If a function/method returns error you may check the returned error type via
 // a type assertion. If the type assertion succeeds you can retrieve the MySQL
 // error code as below.
@@ -22,7 +23,7 @@ func (err Error) Error() string {
 		err.Code, err.Msg)
 }
 
-// MySQL error codes
+// MySQL error codes.
 const (
 	ER_HASHCHK                                 = 1000
 	ER_NISAMCHK                                = 1001
@@ -498,6 +499,7 @@ const (
 	ER_NON_INSERTABLE_TABLE                    = 1471
 )
 
+// ClientError is a type for mymysql client errors.
 type ClientError string
 
 func (e ClientError) Error() string {
@@ -514,7 +516,7 @@ var (
 	ErrUnexpNullTime  = ClientError("unexpected NULL TIME")
 	ErrUnkResultPkt   = ClientError("unexpected or unknown result packet")
 	ErrNotConn        = ClientError("not connected")
-	ErrAlredyConn     = ClientError("not connected")
+	ErrAlredyConn     = ClientError("already connected")
 	ErrBadResult      = ClientError("unexpected result")
 	ErrUnreadedReply  = ClientError("reply is not completely read")
 	ErrBindCount      = ClientError("wrong number of values for bind")

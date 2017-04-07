@@ -1,12 +1,13 @@
-// This example reads URL from stdin and retrieve its content directly to
-// database using SendLongData method
+// Example reads URL from stdin and retrieves its content directly to
+// database using SendLongData method.
 package main
 
 import (
-	"os"
 	"fmt"
-	"strings"
 	"net/http"
+	"os"
+	"strings"
+
 	"github.com/ziutek/mymysql/mysql"
 	_ "github.com/ziutek/mymysql/thrsafe"
 )

@@ -7,6 +7,7 @@ import (
 	gabs "github.com/jeffail/gabs"
 	geo "github.com/kellydunn/golang-geo"
 	ioutil "io/ioutil"
+	"log"
 	"strconv"
 	"sync"
 )
@@ -118,71 +119,25 @@ func (wof WOFFeature) Dumps() string {
 
 func (wof WOFFeature) Id() int {
 
-	id, ok := wof.id("properties.wof:id")
+	id, ok := wof.IntProperty("wof:id")
 
 	if ok {
 		return id
 	}
 
-	id, ok = wof.id("properties.id")
+	id, ok = wof.IntProperty("id")
 
 	if ok {
 		return id
 	}
 
-	id, ok = wof.id("id")
+	id, ok = wof.IntValue("id") // see this - we're looking for an ID on the feature not the properties hash
 
 	if ok {
 		return id
 	}
 
 	return -1
-}
-
-func (wof WOFFeature) id(path string) (int, bool) {
-
-	body := wof.Body()
-
-	var id_float float64
-	var id_str string
-	var id int
-
-	var ok bool
-
-	// what follows shouldn't be necessary but appears to be
-	// for... uh, reasons (20151013/thisisaaronland)
-
-	id_float, ok = body.Path(path).Data().(float64)
-
-	if ok {
-		id = int(id_float)
-	} else {
-		id, ok = body.Path(path).Data().(int)
-	}
-
-	// But wait... there's more (20151028/thisisaaronland)
-
-	if !ok {
-
-		id_str, ok = body.Path(path).Data().(string)
-
-		if ok {
-
-			id_int, err := strconv.Atoi(id_str)
-
-			if err != nil {
-				ok = false
-			} else {
-				id = id_int
-			}
-		}
-	}
-
-	if !ok {
-		id = -1
-	}
-
-	return id, ok
 }
 
 func (wof WOFFeature) Name() string {
@@ -247,7 +202,7 @@ func (wof WOFFeature) Superseded() bool {
 		return true
 	}
 
-     	body := wof.Body()
+	body := wof.Body()
 
 	pointers := body.Path("properties.wof:superseded_by").Data()
 
@@ -256,6 +211,85 @@ func (wof WOFFeature) Superseded() bool {
 	}
 
 	return false
+}
+
+func (wof WOFFeature) Hierarchy() []map[string]int {
+
+	hierarchies := make([]map[string]int, 0)
+
+	body := wof.Body()
+
+	str_hierarchies := body.Path("properties.wof:hierarchy")
+
+	children, _ := str_hierarchies.Children()
+
+	for _, _hierarchy := range children {
+
+		hier := make(map[string]int)
+
+		_hier, _ := _hierarchy.S().ChildrenMap()
+
+		for k, v := range _hier {
+
+			// good times... this needs to be put in a function somewhere
+			// (20161113/thisisaaronland)
+
+			var id int
+			var ok bool
+
+			id_float, ok := v.Data().(float64)
+
+			if ok {
+				id = int(id_float)
+			}
+
+			if !ok {
+
+				id_int, ok := v.Data().(int)
+
+				if ok {
+					id = id_int
+				}
+			}
+
+			if !ok {
+
+				// See this. It's important. We are pairing it with `ok` below
+				// and if we don't pre-declare the variable then we end up having
+				// to do `str_id, ok := v.Data().(string)` which have the awesome
+				// side-effect of creating a locally-scope instance (of the `ok`
+				// variable. At which point it will appear to the outside world
+				// that the type-casting (to a string) will have failed even though
+				// it hasn't. Computers... amirite? (20161128/thisisaaronland)
+
+				var str_id string
+
+				str_id, ok = v.Data().(string)
+
+				if ok {
+
+					strconv_id, err := strconv.Atoi(str_id)
+
+					if err == nil {
+						id = strconv_id
+					} else {
+						ok = false
+					}
+				}
+			}
+
+			if !ok {
+				log.Println("Failed to type cast (%s = %s) in to a WOF ID", k, v)
+				id = -1
+			}
+
+			hier[k] = id
+		}
+
+		hierarchies = append(hierarchies, hier)
+	}
+
+	return hierarchies
 }
 
 func (wof WOFFeature) placetype(path string) (string, bool) {
@@ -278,6 +312,58 @@ func (wof WOFFeature) StringValue(path string) (string, bool) {
 
 	value, ok = body.Path(path).Data().(string)
 	return value, ok
+}
+
+func (wof WOFFeature) IntProperty(prop string) (int, bool) {
+
+	path := fmt.Sprintf("properties.%s", prop)
+	return wof.IntValue(path)
+}
+
+func (wof WOFFeature) IntValue(path string) (int, bool) {
+
+	body := wof.Body()
+
+	var id_float float64
+	var id_str string
+	var id int
+
+	var ok bool
+
+	// what follows shouldn't be necessary but appears to be
+	// for... uh, reasons (20151013/thisisaaronland)
+
+	id_float, ok = body.Path(path).Data().(float64)
+
+	if ok {
+		id = int(id_float)
+	} else {
+		id, ok = body.Path(path).Data().(int)
+	}
+
+	// But wait... there's more (20151028/thisisaaronland)
+
+	if !ok {
+
+		id_str, ok = body.Path(path).Data().(string)
+
+		if ok {
+
+			id_int, err := strconv.Atoi(id_str)
+
+			if err != nil {
+				ok = false
+			} else {
+				id = id_int
+			}
+		}
+	}
+
+	if !ok {
+		id = -1
+	}
+
+	return id, ok
 }
 
 // sudo make me a package function and accept an interface

@@ -1,15 +1,16 @@
-// Thread unsafe engine for MyMySQL
+// Package native is a thread unsafe engine for MyMySQL.
 package native
 
 import (
 	"bufio"
 	"fmt"
-	"github.com/ziutek/mymysql/mysql"
 	"io"
 	"net"
 	"reflect"
 	"strings"
 	"time"
+
+	"github.com/ziutek/mymysql/mysql"
 )
 
 type serverInfo struct {
@@ -85,6 +86,10 @@ func New(proto, laddr, raddr, user, passwd string, db ...string) mysql.Conn {
 		panic("mymy.New: too many arguments")
 	}
 	return &my
+}
+
+func (my *Conn) Credentials() (user, passwd string) {
+	return my.user, my.passwd
 }
 
 func (my *Conn) NarrowTypeSet(narrow bool) {

@@ -32,8 +32,7 @@ func (c Crawler) Crawl(cb CrawlFunc) error {
 			return nil
 		}
 
-		_ = cb(path, info)
-		return nil
+		return cb(path, info)
 	}
 
 	var err error
