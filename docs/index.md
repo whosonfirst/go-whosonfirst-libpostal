@@ -108,6 +108,4 @@ Depending on the address string you are parsing only some of those labels may be
 
 ## Usage limits
 
-The Libpostal API is available for use with or without an API key. Key-less access to the API is provided as a convenience for people who are curious and want (or need) to see how things work without going through a bunch of extra steps.
-
-For any kind of serious use of the API, though, it is best to sign up for an API key. [Read more about API key signup and rate limits](https://mapzen.com/documentation/overview/).
+The Libpostal service requires a Mapzen API key. In a request, you must append your own API key to the URL, following `api_key=`. See the [Mapzen developer overview](https://mapzen.com/documentation/overview/) for more on API keys and rate limits.
