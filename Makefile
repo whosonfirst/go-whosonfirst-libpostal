@@ -21,10 +21,9 @@ deps:	rmdeps
 	@GOPATH=$(GOPATH) go get -u "github.com/openvenues/gopostal/parser"
 	@GOPATH=$(GOPATH) go get -u "github.com/whosonfirst/go-sanitize"
 
-vendor: deps
-	if test ! -d vendor; then mkdir vendor; fi
-	if test -d vendor/src; then rm -rf vendor/src; fi
-	cp -r src vendor/src
+vendor-deps: deps
+	if test -d vendor; then rm -rf vendor; fi
+	cp -r src vendor
 	find vendor -name '.git' -print -type d -exec rm -rf {} +
 	rm -rf src
 
