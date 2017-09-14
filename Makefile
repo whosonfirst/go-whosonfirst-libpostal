@@ -5,7 +5,8 @@ prep:
 	if test -d pkg; then rm -rf pkg; fi
 
 self:   prep rmdeps
-	cp -r vendor/src/ src/
+	if test -d src; then rm -rf src; fi
+	cp -r vendor src
 
 rmdeps:
 	if test -d src; then rm -rf src; fi 
