@@ -17,8 +17,7 @@ func ExpandHandler() (gohttp.Handler, error) {
 		}
 
 		expansions := expand.ExpandAddress(address)
-
-		WriteResponse(rsp, expansions, expandSuccess)
+		WriteResponse(rsp, expansions)
 	}
 
 	h := gohttp.HandlerFunc(fn)

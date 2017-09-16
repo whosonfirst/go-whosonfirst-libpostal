@@ -27,11 +27,19 @@ func main() {
 		logger.Fatal("failed to create expand handler, because %v", err)
 	}
 
+	ping_hander, err := http.PingHandler()
+
+	if err != nil {
+		logger.Fatal("failed to create ping handler, because %v", err)
+	}
+
 	endpoint := fmt.Sprintf("%s:%d", *host, *port)
 
 	mux := http.NewServeMux()
+	
 	mux.HandleFunc("/parse", parser_handler)
 	mux.HandleFunc("/expand", expand_handler)
+	mux.HandleFunc("/ping", ping_handler)	
 
 	err := gracehttp.Serve(&http.Server{Addr: endpoint, Handler: mux})
 
