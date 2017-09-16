@@ -7,6 +7,7 @@ prep:
 self:   prep rmdeps
 	if test -d src; then rm -rf src; fi
 	cp -r vendor src
+	mkdir -p src/github.com/whosonfirst/go-whosonfirst-libpostal/http
 
 rmdeps:
 	if test -d src; then rm -rf src; fi 
@@ -14,9 +15,6 @@ rmdeps:
 build:	fmt bin
 
 deps:	rmdeps
-	@GOPATH=$(GOPATH) go get -u "github.com/whosonfirst/go-whosonfirst-geojson"
-	@GOPATH=$(GOPATH) go get -u "github.com/whosonfirst/go-whosonfirst-csv"
-	@GOPATH=$(GOPATH) go get -u "github.com/whosonfirst/go-whosonfirst-crawl"
 	@GOPATH=$(GOPATH) go get -u "github.com/facebookgo/grace/gracehttp"
 	@GOPATH=$(GOPATH) go get -u "github.com/openvenues/gopostal/expand"
 	@GOPATH=$(GOPATH) go get -u "github.com/openvenues/gopostal/parser"
@@ -30,7 +28,7 @@ vendor-deps: deps
 
 fmt:
 	go fmt cmd/*.go
+	go fmt http/*.go
 
 bin: 	self
 	@GOPATH=$(GOPATH) go build -o bin/wof-libpostal-server cmd/wof-libpostal-server.go
-	@GOPATH=$(GOPATH) go build -o bin/wof-libpostal-crawl cmd/wof-libpostal-crawl.go
