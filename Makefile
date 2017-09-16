@@ -7,7 +7,8 @@ prep:
 self:   prep rmdeps
 	if test -d src; then rm -rf src; fi
 	cp -r vendor src
-	mkdir -p src/github.com/whosonfirst/go-whosonfirst-libpostal/http
+	mkdir -p src/github.com/whosonfirst/go-whosonfirst-libpostal
+	cp -r http src/github.com/whosonfirst/go-whosonfirst-libpostal/
 
 rmdeps:
 	if test -d src; then rm -rf src; fi 
@@ -19,6 +20,7 @@ deps:	rmdeps
 	@GOPATH=$(GOPATH) go get -u "github.com/openvenues/gopostal/expand"
 	@GOPATH=$(GOPATH) go get -u "github.com/openvenues/gopostal/parser"
 	@GOPATH=$(GOPATH) go get -u "github.com/whosonfirst/go-sanitize"
+	@GOPATH=$(GOPATH) go get -u "github.com/whosonfirst/go-whosonfirst-log"
 
 vendor-deps: deps
 	if test -d vendor; then rm -rf vendor; fi

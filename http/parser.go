@@ -5,18 +5,18 @@ import (
 	gohttp "net/http"
 )
 
-func ExpandHandler() (gohttp.Handler, error) {
+func ParserHandler() (gohttp.Handler, error) {
 
 	fn := func(rsp gohttp.ResponseWriter, req *gohttp.Request) {
 
 		address, err := GetAddress(req)
 
 		if err != nil {
-			gohttp.Error(w, err.Error(), err.Code)
+			gohttp.Error(rsp, err.Error(), err.Code)
 			return
 		}
 
-		parsed := parser.ParseAddress(address)
+		parsed := postal.ParseAddress(address)
 
 		query := req.URL.Query()
 
@@ -31,7 +31,7 @@ func ExpandHandler() (gohttp.Handler, error) {
 	return h, nil
 }
 
-func FormatParsed(parsed []parser.ParsedComponent) map[string][]string {
+func FormatParsed(parsed []postal.ParsedComponent) map[string][]string {
 
 	rsp := make(map[string][]string)
 

@@ -9,14 +9,14 @@ func ExpandHandler() (gohttp.Handler, error) {
 
 	fn := func(rsp gohttp.ResponseWriter, req *gohttp.Request) {
 
-		address, err := GetAddress(r)
+		address, err := GetAddress(req)
 
 		if err != nil {
 			gohttp.Error(rsp, err.Error(), err.Code)
 			return
 		}
 
-		expansions := expand.ExpandAddress(address)
+		expansions := postal.ExpandAddress(address)
 		WriteResponse(rsp, expansions)
 	}
 

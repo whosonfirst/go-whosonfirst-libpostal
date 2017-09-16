@@ -1,5 +1,12 @@
 package http
 
+import (
+       "expvar"
+       "fmt"
+       gohttp "net/http"
+       "strings"
+)
+
 var (
 	readErrors    *expvar.Int
 	marshalErrors *expvar.Int
@@ -41,7 +48,7 @@ func init() {
 
 func ExpvarHandler(host string) (gohttp.Handler, error) {
 
-	f := func(rsp gohttp.ResponseWriter, req *gohttp.Request) {
+	fn := func(rsp gohttp.ResponseWriter, req *gohttp.Request) {
 
 		remote := strings.Split(req.RemoteAddr, ":")
 
@@ -70,7 +77,7 @@ func ExpvarHandler(host string) (gohttp.Handler, error) {
 		expvar.Do(func(kv expvar.KeyValue) {
 
 			if !first {
-				fmt.Fprintf(w, ",\n")
+				fmt.Fprintf(rsp, ",\n")
 			}
 
 			first = false

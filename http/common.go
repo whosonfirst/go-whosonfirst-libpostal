@@ -2,7 +2,6 @@ package http
 
 import (
 	"encoding/json"
-	"github.com/facebookgo/grace/gracehttp"
 	"github.com/whosonfirst/go-sanitize"
 	gohttp "net/http"
 	"strings"
