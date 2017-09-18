@@ -1,10 +1,10 @@
 package http
 
 import (
-       "expvar"
-       "fmt"
-       gohttp "net/http"
-       "strings"
+	"expvar"
+	"fmt"
+	gohttp "net/http"
+	"strings"
 )
 
 var (

@@ -1,7 +1,7 @@
 package main
 
 import (
-       "flag"
+	"flag"
 	"fmt"
 	"github.com/facebookgo/grace/gracehttp"
 	"github.com/whosonfirst/go-whosonfirst-libpostal/http"
@@ -19,13 +19,13 @@ func main() {
 
 	logger := log.SimpleWOFLogger()
 
-	parser_handler, err := http.ParserHandler()
+	parser_handler, err := http.ParserHandler(logger)
 
 	if err != nil {
 		logger.Fatal("failed to create parser handler, because %v", err)
 	}
 
-	expand_handler, err := http.ExpandHandler()
+	expand_handler, err := http.ExpandHandler(logger)
 
 	if err != nil {
 		logger.Fatal("failed to create expand handler, because %v", err)
@@ -38,12 +38,13 @@ func main() {
 	}
 
 	endpoint := fmt.Sprintf("%s:%d", *host, *port)
+	logger.Status("listening on %s", endpoint)
 
 	mux := gohttp.NewServeMux()
-	
+
 	mux.Handle("/parse", parser_handler)
 	mux.Handle("/expand", expand_handler)
-	mux.Handle("/ping", ping_handler)	
+	mux.Handle("/ping", ping_handler)
 
 	err = gracehttp.Serve(&gohttp.Server{Addr: endpoint, Handler: mux})
 
