@@ -34,3 +34,6 @@ fmt:
 
 bin: 	self
 	@GOPATH=$(GOPATH) go build -o bin/wof-libpostal-server cmd/wof-libpostal-server.go
+
+data:
+	bunzip2 -k testdata/*.bz2
