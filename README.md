@@ -4,6 +4,8 @@ Go tools for working with libpostal (sometimes in the service of Who's On First)
 
 ## Install
 
+Make sure you have [`Go`](https://golang.org/doc/install) and [`libpostal`](https://github.com/openvenues/libpostal) installed. Then
+
 ```
 make bin
 ```
@@ -11,7 +13,7 @@ make bin
 ## wof-libpostal-server
 
 ```
-$> wof-libpostal-server -options
+$> .bin/wof-libpostal-server -options
 
 Usage of wof-libpostal-server:
   -gracehttp.log
