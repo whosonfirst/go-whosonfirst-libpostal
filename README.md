@@ -13,7 +13,7 @@ make bin
 ## wof-libpostal-server
 
 ```
-$> .bin/wof-libpostal-server -options
+$> ./bin/wof-libpostal-server -options
 
 Usage of wof-libpostal-server:
   -gracehttp.log
