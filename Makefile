@@ -1,5 +1,4 @@
-CWD=$(shell pwd)
-GOPATH := $(CWD)
+export GOPATH=${PWD}
 
 prep:
 	if test -d pkg; then rm -rf pkg; fi
