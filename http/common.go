@@ -2,18 +2,55 @@ package http
 
 import (
 	"encoding/json"
-	"github.com/whosonfirst/go-sanitize"
+	"io/ioutil"
 	gohttp "net/http"
 	"strings"
+
+	"github.com/whosonfirst/go-sanitize"
 )
+
+type address struct {
+	Address string `json:"address"`
+}
 
 func GetAddress(r *gohttp.Request) (string, *Error) {
 
-	_, err := IsValidMethod(r, []string{"GET"})
+	method := r.Method
+
+	if method == "GET" {
+		return GetAddressForGetRequest(r)
+	}
+
+	if method == "POST" {
+		return GetAddressForPostRequest(r)
+	}
+
+	return "", NewError(gohttp.StatusMethodNotAllowed, "")
+}
+
+func GetAddressForPostRequest(r *gohttp.Request) (string, *Error) {
+
+	body, err := ioutil.ReadAll(r.Body)
 
 	if err != nil {
-		return "", err
+		return "", NewError(gohttp.StatusInternalServerError, "SOMETHING_WENT_WRONG")
 	}
+
+	var address address
+	err = json.Unmarshal(body, &address)
+
+	if err != nil {
+		return "", NewError(gohttp.StatusBadRequest, "E_INVALID_QUERY")
+	}
+
+	if address.Address == "" {
+		return "", NewError(gohttp.StatusBadRequest, "E_INSUFFICIENT_QUERY")
+	}
+
+	return address.Address, nil
+}
+
+func GetAddressForGetRequest(r *gohttp.Request) (string, *Error) {
 
 	query, err := ParseRequest(r)
 
@@ -61,26 +98,6 @@ func ParseQuery(query *Query) (string, *Error) {
 	}
 
 	return q, nil
-}
-
-func IsValidMethod(r *gohttp.Request, allowed []string) (bool, *Error) {
-
-	method := r.Method
-	ok := false
-
-	for _, this := range allowed {
-
-		if this == method {
-			ok = true
-			break
-		}
-	}
-
-	if !ok {
-		return false, NewError(gohttp.StatusMethodNotAllowed, "")
-	}
-
-	return true, nil
 }
 
 func WriteResponse(w gohttp.ResponseWriter, rsp interface{}) {
